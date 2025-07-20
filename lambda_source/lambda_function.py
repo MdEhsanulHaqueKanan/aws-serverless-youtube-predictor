@@ -5,58 +5,62 @@ import os
 import json
 
 # --- Environment Variables ---
-# We will set these in the Lambda configuration
 BUCKET_NAME = os.environ.get('BUCKET_NAME')
 MODEL_KEY = os.environ.get('MODEL_KEY')
 
 # --- AWS S3 Client ---
-# Use a boto3 S3 client to download the model from S3
 s3_client = boto3.client('s3')
 
-# --- Load Model ---
-# This part of the code runs only once, during the Lambda "cold start".
-# It downloads the model from S3 to the temporary /tmp/ directory in the Lambda environment.
-# Subsequent invocations can reuse the downloaded model if the container is still "warm".
-try:
-    local_model_path = f'/tmp/{os.path.basename(MODEL_KEY)}'
-    print(f"Downloading model from s3://{BUCKET_NAME}/{MODEL_KEY} to {local_model_path}")
-    s3_client.download_file(BUCKET_NAME, MODEL_KEY, local_model_path)
-    print("Model downloaded successfully.")
-    
-    model = joblib.load(local_model_path)
-    print("Model loaded successfully.")
+# --- Global Model Variable ---
+# Initialize the model as a global variable so it can be cached.
+model = None
 
-except Exception as e:
-    print(f"Error loading model: {e}")
-    model = None
+def load_model():
+    """
+    This function loads the model from S3.
+    It's called only if the global 'model' variable is None.
+    """
+    global model
+    try:
+        local_model_path = f'/tmp/{os.path.basename(MODEL_KEY)}'
+        print(f"Downloading model from s3://{BUCKET_NAME}/{MODEL_KEY} to {local_model_path}")
+        s3_client.download_file(BUCKET_NAME, MODEL_KEY, local_model_path)
+        print("Model downloaded successfully.")
+        
+        model = joblib.load(local_model_path)
+        print("Model loaded successfully.")
+        return True
+
+    except Exception as e:
+        print(f"Error loading model: {e}")
+        return False
 
 def lambda_handler(event, context):
     """
     Main Lambda handler function to process API Gateway requests.
     """
-    print(f"Received event: {event}")
-
+    global model
+    
+    # --- Load Model if Not Already Loaded ---
+    # This check ensures the model is loaded only once per container instance.
     if model is None:
-        return {
-            'statusCode': 500,
-            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'Model could not be loaded.'})
-        }
+        if not load_model():
+            return {
+                'statusCode': 500,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Model could not be loaded.'})
+            }
 
     try:
         # API Gateway sends the request body as a JSON string. We need to parse it.
-        # If testing directly in Lambda, the body might already be a dict.
         if isinstance(event.get('body'), str):
             body = json.loads(event['body'])
         else:
             body = event.get('body', {})
 
         # --- Create DataFrame from input ---
-        # The input data is a single dictionary. We convert it into a DataFrame
-        # with a single row so it can be processed by the scikit-learn pipeline.
         input_data = pd.DataFrame([body])
         
-        # Ensure correct data types for categorical features
         if 'category_id' in input_data.columns:
              input_data['category_id'] = input_data['category_id'].astype('int64')
 
@@ -64,19 +68,16 @@ def lambda_handler(event, context):
 
         # --- Make Prediction ---
         prediction = model.predict(input_data)
-        
-        # The prediction is a numpy array with one element. We extract that number.
         predicted_view_count = prediction[0]
 
         print(f"Prediction successful. Predicted view count: {predicted_view_count}")
 
         # --- Return Response ---
-        # The response must be in a specific format for API Gateway.
         return {
             'statusCode': 200,
             'headers': {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*' # Allow cross-origin requests for our UI
+                'Access-Control-Allow-Origin': '*'
             },
             'body': json.dumps({'predicted_view_count': predicted_view_count})
         }

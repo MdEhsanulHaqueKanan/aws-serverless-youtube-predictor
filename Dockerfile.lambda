@@ -16,4 +16,4 @@ COPY lambda_source/lambda_function.py .
 
 # --- Set the Command for Lambda ---
 # Tell Lambda to run the 'lambda_handler' function from the 'lambda_function.py' file.
-CMD ["lambda_function.handler"]
+CMD ["lambda_function.lambda_handler"]
