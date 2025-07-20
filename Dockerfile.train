@@ -1,0 +1,30 @@
+# --- Base Image Stage ---
+# Use an official, lightweight Python image as a starting point.
+# Using a specific version (3.10-slim) ensures reproducibility.
+FROM python:3.10-slim
+
+# --- Set up the Working Directory ---
+# This sets the default location for all subsequent commands inside the container.
+WORKDIR /app
+
+# --- Copy Project Files ---
+# Copy the requirements file first. This is a best practice for Docker layer caching.
+# If requirements.txt doesn't change, Docker can reuse the cached layer for package installation,
+# making subsequent builds much faster.
+COPY requirements.txt .
+
+# --- Install Dependencies ---
+# Install the Python libraries listed in requirements.txt.
+# --no-cache-dir reduces the size of the final image.
+# --trusted-host pypi.python.org can prevent SSL issues in some network environments.
+RUN pip install --no-cache-dir --trusted-host pypi.python.org -r requirements.txt
+
+# --- Copy the rest of the application code ---
+# Copy the source code and data needed for training.
+COPY ./src ./src
+COPY ./data ./data
+
+# --- Set the Default Command ---
+# This is the command that will be executed when the container starts.
+# It tells the container to run our training script.
+CMD ["python", "src/train.py"]

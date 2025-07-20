@@ -1,0 +1,19 @@
+# --- Base Image Stage ---
+# Start with an official AWS-provided base image for Lambda with Python 3.10.
+FROM public.ecr.aws/lambda/python:3.10
+
+# --- Set up the Working Directory ---
+WORKDIR ${LAMBDA_TASK_ROOT}
+
+# --- Install Dependencies ---
+# COPY requirements.txt from the root directory (where the build is run)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# --- Copy Lambda Function Code ---
+# COPY lambda_function.py from its sub-directory into the container
+COPY lambda_source/lambda_function.py .
+
+# --- Set the Command for Lambda ---
+# Tell Lambda to run the 'lambda_handler' function from the 'lambda_function.py' file.
+CMD ["lambda_function.handler"]
