@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Popularity Predictor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>YouTube Popularity Predictor</h1>
+        <p>Enter the details of a video to predict its potential view count.</p>
+        
+        <form id="prediction-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="like_count">Like Count</label>
+                    <input type="number" id="like_count" value="5000" required>
+                </div>
+                <div class="form-group">
+                    <label for="comment_count">Comment Count</label>
+                    <input type="number" id="comment_count" value="200" required>
+                </div>
+                <div class="form-group">
+                    <label for="duration_seconds">Duration (seconds)</label>
+                    <input type="number" id="duration_seconds" value="300" required>
+                </div>
+                <div class="form-group">
+                    <label for="tag_count">Tag Count</label>
+                    <input type="number" id="tag_count" value="15" required>
+                </div>
+                <div class="form-group">
+                    <label for="category_id">Category ID</label>
+                    <input type="number" id="category_id" value="24" required>
+                </div>
+                <div class="form-group">
+                    <label for="publish_hour">Publish Hour (0-23)</label>
+                    <input type="number" id="publish_hour" value="14" required>
+                </div>
+                <div class="form-group">
+                    <label for="publish_day_of_week">Day of Week (0=Mon, 6=Sun)</label>
+                    <input type="number" id="publish_day_of_week" value="3" required>
+                </div>
+                <div class="form-group">
+                    <label for="channel_title">Channel Title</label>
+                    <input type="text" id="channel_title" value="Some Channel" required>
+                </div>
+            </div>
+            <button type="submit">Predict View Count</button>
+        </form>
+
+        <div id="result-container" class="hidden">
+            <h2>Prediction Result</h2>
+            <p>Predicted View Count: <span id="prediction-result"></span></p>
+        </div>
+        
+        <div id="loading-spinner" class="hidden"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
