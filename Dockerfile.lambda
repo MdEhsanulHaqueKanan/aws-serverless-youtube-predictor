@@ -1,6 +1,16 @@
 # --- Base Image Stage ---
 FROM public.ecr.aws/lambda/python:3.10
 
+# --- Arguments and Environment Variables ---
+# Declare build arguments that will be passed in from the buildspec.yml
+ARG BUCKET_NAME
+ARG MODEL_KEY
+
+# Set the environment variables inside the container image
+# These will be available to the lambda_function.py at runtime
+ENV BUCKET_NAME=${BUCKET_NAME}
+ENV MODEL_KEY=${MODEL_KEY}
+
 # --- Install Dependencies ---
 # Copy requirements first for caching
 COPY requirements.txt .
