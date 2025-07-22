@@ -16,6 +16,17 @@ This project showcases a full range of modern MLOps skills, from automated cloud
     *   **Inference:** Deployed as a highly-available, auto-scaling serverless function using **AWS Lambda** and **API Gateway**.
 *   **Containerization for Reproducibility:** Used **Docker** to create separate, consistent, and portable environments for both the training script and the inference API, solving dependency and compatibility issues.
 
+## 📊 Model Performance
+
+A baseline Random Forest Regressor was trained on features engineered from the video's metadata. The model was evaluated on an unseen test set (20% of the data), yielding the following performance metrics:
+
+*   **R-squared (R²):** `0.63`
+    *   The model successfully explains approximately 63% of the variance in video view counts.
+*   **Mean Absolute Error (MAE):** `~5.2 million views`
+*   **Root Mean Squared Error (RMSE):** `~19.0 million views`
+
+*Note: The high error values (MAE, RMSE) are characteristic of heavily skewed datasets like video view counts, where a small number of viral videos with extremely high numbers disproportionately affect the average error. The R² score indicates a solid positive correlation and predictive power for a baseline model.*
+
 ## 🏛️ Project Architecture
 
 This project follows a professional, industry-standard MLOps workflow:
@@ -39,6 +50,7 @@ This project follows a professional, industry-standard MLOps workflow:
       |                                                            v
       +------------------ [AWS S3 (Model & Data)] <-----------------+
 ```
+
 
 ## 🛠️ Tech Stack
 
