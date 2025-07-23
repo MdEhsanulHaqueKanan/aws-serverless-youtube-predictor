@@ -1,5 +1,5 @@
 // --- Configuration ---
-const API_ENDPOINT = 'https://ro2dr7an6j.execute-api.us-east-1.amazonaws.com/predict';
+const API_ENDPOINT = 'https://3bd5z76vu0.execute-api.us-east-1.amazonaws.com/v1/predict';
 
 // --- Get DOM Elements ---
 const form = document.getElementById('prediction-form');
