@@ -5,16 +5,18 @@ const API_ENDPOINT = 'https://7pxjw3lx1m.execute-api.us-east-1.amazonaws.com/pre
 const form = document.getElementById('prediction-form');
 const resultContainer = document.getElementById('result-container');
 const predictionResultSpan = document.getElementById('prediction-result');
-const loadingSpinner = document.getElementById('loading-spinner');
+const submitButton = document.getElementById('submit-button');
+
 
 // --- Event Listener for Form Submission ---
 form.addEventListener('submit', async (event) => {
     // Prevent the default form submission which reloads the page
     event.preventDefault();
 
-    // Show loading state and hide previous results
+    // Disable button and show loading state
+    submitButton.disabled = true;
+    submitButton.textContent = 'Predicting...';
     resultContainer.classList.add('hidden');
-    // We don't have a visual spinner in this simple version, but this is where you'd show it
     
     // --- Collect Data from Form ---
     const formData = {
@@ -40,12 +42,13 @@ form.addEventListener('submit', async (event) => {
             }
         });
 
+        const result = await response.json();
+
         if (!response.ok) {
-            // If the server response is not 2xx, throw an error
-            throw new Error(`HTTP error! status: ${response.status}`);
+            // If the server response is not 2xx, throw an error with the message from the lambda
+            throw new Error(result.error || `HTTP error! status: ${response.status}`);
         }
 
-        const result = await response.json();
         console.log("Received result:", result);
 
         // --- Display the Result ---
@@ -57,7 +60,11 @@ form.addEventListener('submit', async (event) => {
     } catch (error) {
         // --- Display an Error ---
         console.error("Error making prediction:", error);
-        predictionResultSpan.textContent = "An error occurred. Please check the console for details.";
+        predictionResultSpan.textContent = `An error occurred: ${error.message}`;
         resultContainer.classList.remove('hidden');
+    } finally {
+        // Re-enable the button regardless of success or failure
+        submitButton.disabled = false;
+        submitButton.textContent = 'Predict View Count';
     }
 });

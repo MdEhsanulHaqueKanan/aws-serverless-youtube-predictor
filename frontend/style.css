@@ -8,13 +8,14 @@ body {
     min-height: 100vh;
     margin: 0;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 .container {
     background-color: #ffffff;
     padding: 30px 40px;
     border-radius: 12px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px GITHUB CHAT/youtube-video-prediction chat with ai studio 1.txt30px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 800px;
     text-align: center;
@@ -66,12 +67,22 @@ button {
     font-size: 18px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.1s ease;
 }
 
 button:hover {
     background-color: #2980b9;
 }
+
+button:active {
+    transform: scale(0.98);
+}
+
+button:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+}
+
 
 #result-container {
     margin-top: 30px;
