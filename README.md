@@ -14,7 +14,7 @@ This project is a complete, end-to-end Machine Learning Operations (MLOps) pipel
 
 The entire architecture is designed to run with **zero ongoing monthly costs**, leveraging the AWS "Always Free" Tier.
 
-**► Live Demo:** [Link to Your Live S3 Website Will Go Here]
+**► Live Demo:** [http://youtube-predictor-frontend-ehsanul-72525.s3-website-us-east-1.amazonaws.com/](http://youtube-predictor-frontend-ehsanul-72525.s3-website-us-east-1.amazonaws.com/)
 
 ## 📸 Application Preview
 
