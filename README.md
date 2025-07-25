@@ -18,7 +18,7 @@ The entire architecture is designed to run with **zero ongoing monthly costs**, 
 
 ## 📸 Application Preview
 
-![alt text](assets/app_sc1.png)
+![alt text](assets/app_sc2.png)
 
 ## 🏆 Key Achievements & MLOps Concepts Demonstrated
 
